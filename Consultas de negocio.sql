@@ -60,6 +60,11 @@ HAVING COUNT(r.aprobadoPor_usuario_id) <= 5
 ORDER BY SolicitudesAprobadas DESC
 ;
 
+/*==========================
+ PROCEDIMIENTOS ALMACENADOS
+ ==========================*/
+
+ /* procedimiento para buscar en la tabla usuario, su nombre completo y su rol */
 
  CREATE PROCEDURE sp_UsuarioPorID
 (
@@ -78,6 +83,9 @@ BEGIN
 END;
 
 
+/* procedimiento almacenado #2 */
+/*recibe un id de usuario y devuelve la cantidad total de recursos que pertenecen a ese usuario */
+
 CREATE PROCEDURE sp_TotalRecursosPorUsuario
 (
     @idUsuario INT,
@@ -89,6 +97,10 @@ BEGIN
     FROM Recurso
     WHERE usuario_id = @idUsuario;
 END;
+
+
+/* procedimiento almacenado #3 */
+/* este proceso sirve para insertar nuevos recursos y devolver el id del recurso recien agregado */
 
 CREATE PROCEDURE sp_InsertarRecurso
 (
@@ -105,9 +117,12 @@ BEGIN
     INSERT INTO Recurso (titulo, descripcion, url, tipoRecurso_id, notasDocente, usuario_id)
     VALUES (@titulo, @descripcion, @url, @tipoRecurso_id, @notasDocente, @usuario_id);
 
-    SET @nuevoID = SCOPE_IDENTITY();
+    SET @nuevoID = SCOPE_IDENTITY();/* devuelve el id del recurso recien agregado o creado */
 END;
 
+
+/* procedimiento almacenado #4 */
+/* este proceso cambia el estado de la solicitud de recurso y devuelve un mensaje de confirmacion  */
 
 CREATE PROCEDURE sp_ActualizarEstadoSolicitud
 (
@@ -124,7 +139,8 @@ BEGIN
     SET @mensaje = 'Estado de solicitud actualizado correctamente';
 END;
 
-
+/* proceso almacenado #5 */
+/* este proceso almacenado sirve para contar cuantos recursos estan asociados a una clase o curso */
 
 CREATE PROCEDURE sp_RecursosPorClase
 (
@@ -138,6 +154,9 @@ BEGIN
     WHERE cursoClase_id = @idClase;
 END;
 
+/* proceso almacenado #6 */
+/* este proceso almacenado sirve para contar cuantas solicitudes pendientes existen de un tipo especifico */
+
 CREATE PROCEDURE sp_SolicitudesPendientesPorTipo
 (
     @tipoSolicitud INT,
@@ -148,4 +167,5 @@ BEGIN
     SELECT @totalPendientes = COUNT(*)
     FROM SolicitudRecurso
     WHERE tipoSolicitud_id = @tipoSolicitud
-      AND estadoSolicitud_id = 1; 
+      AND estadoSolicitud_id = 1; -- Asumiendo que 1 = PENDIENTE
+END;
